@@ -1,0 +1,37 @@
+#!/bin/sh
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+runlevel=S
+prevlevel=N
+
+umask 022
+
+export PATH runlevel prevlevel
+
+mkdir -p /proc
+mkdir -p /sys
+mkdir -p /mnt
+mkdir -p /root
+mkdir -p /tmp
+mkdir -p /opt
+mkdir -p /var
+mkdir -p /test
+
+mount -a
+
+mkdir -p /dev/pts
+mount -t devpts devpts /dev/pts
+
+echo /sbin/mdev > /proc/sys/kernel/hotplug
+mdev -s
+
+/bin/hostname -F /etc/sysconfig/HOSTNAME
+
+ifconfig eth0 192.168.1.10
+
+# An example to autostart a program after power-on.
+#cd /root
+#./hello_static &
+#cd -
+
